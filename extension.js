@@ -574,55 +574,22 @@ function sendMove(direction) {
 					break;
 				case "up":
 					_log('up')
-					if (app.wintile.height == 2 && app.wintile.width == 2 && app.wintile.col == 1) {
-						// We are in 1st maximize, go to full maximize
-						_log('up - 1')
-						moveApp(app, { "row": 0, "col": 0, "height": 2, "width": 4 });
-					} else if (app.wintile.height == 2) {
-						// We are full height on half, go to top while keeping width
-						_log('up - 2')
-						moveApp(app, { "row": 0, "col": app.wintile.col, "height": 1, "width": app.wintile.width });
-					} else if (app.wintile.row == 1) {
-						// We are bottom half, go to full height, keeping width
-						_log('up - 3')
-						moveApp(app, { "row": 0, "col": app.wintile.col, "height": 2, "width": app.wintile.width });
-					} else {
-						// We are top half, go straight to 2nd maximize
-						_log('up - 4')
-						moveApp(app, { "row": 0, "col": 0, "height": 2, "width": 4 });
+					const newWidth = Math.min(app.wintile.width + 1, config.cols);
+					const newHeight = 2;
+					const newRow = 0;
+					let newCol;
+					switch(newWidth) {
+						case 2:
+							newCol = Math.floor(app.wintile.col / 2) * 2; break;
+						case 3:
+							newCol = Math.max(0, app.wintile.col - 1); break;
+						case 4:
+							newCol = 0; break;
 					}
+					moveApp(app, { "row": newRow, "col": newCol, "height": newHeight, "width": newWidth });
 					break;
 				case "down":
 					_log('down')
-					if (app.wintile.col == 0 && app.wintile.width == 4 && app.wintile.height == 2) {
-						// We are 2nd maximized, go to 1st maximized
-						_log('down - 1')
-						moveApp(app, { "row": 0, "col": 1, "height": 2, "width": 2 });
-					} else if (app.wintile.col == 0 && app.wintile.width == 4 && app.wintile.row == 0) {
-						// We are top half, go to bottom half
-						_log('down - 2')
-						moveApp(app, { "row": 1, "col": 0, "height": app.wintile.height, "width": app.wintile.width });
-					} else if (app.wintile.col == 1 && app.wintile.width == 2) {
-						// We are 1st maximized, restore
-						_log('down - 3')
-						restoreApp(app);
-					} else if (app.wintile.height == 2) {
-						// We are full height, go to half height
-						_log('down - 4')
-						moveApp(app, { "row": 1, "col": app.wintile.col, "height": 1, "width": app.wintile.width });
-					} else if (app.wintile.row == 0) {
-						// We are top half, go to full height
-						_log('down - 5')
-						moveApp(app, { "row": 0, "col": app.wintile.col, "height": 2, "width": app.wintile.width });
-					} else if (app.wintile.width != 4) {
-						// We are not full bottom but are a tile, go full width
-						_log('down - 6')
-						moveApp(app, { "row": 1, "col": 0, "height": 1, "width": 4 });					
-					} else {
-						// We are bottom half, minimize
-						_log('down - 7')
-						requestMinimize(app);
-					}
 					break;
 			}	
 		}
